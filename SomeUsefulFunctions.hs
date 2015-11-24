@@ -12,12 +12,15 @@ orElse :: Maybe a -> Maybe a -> Maybe a
 orElse Nothing  x  = x
 orElse (Just a) _  = Just a
 
--- The maybe function takes a default value, a function, and a Maybe value. If the Maybe value is Nothing, the function returns the default value. Otherwise, it applies the function to the value inside the Just and returns the result.    
--- Tries a function and sees if it returns a certain value?
+{- The maybe function takes a default value, a function, and a Maybe value. If the Maybe value is Nothing, the function returns the default value. 
+Otherwise, it applies the function to the value inside the Just and returns the result.    
+Tries a function and sees if it returns a certain value? -}
 try :: (a -> Maybe a) -> a -> a
 try f x = maybe x id (f x)
 
--- Takes a function and a value and applies the function to the value. If the function returns the same value, the value is returned. Otherwise it is recursively tried again until it does.
+{- Takes a function and a value and applies the function to the value. If the function returns the same value, 
+the value is returned. Otherwise it is recursively tried again until it does.-}
+
 fix :: Eq a => (a -> a) -> a -> a
 fix f x
    |  f x == x  = x

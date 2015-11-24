@@ -103,25 +103,35 @@ reductionsApply _ = id
 -- Match and substitute
 --------------------------------------------------------
 
--- Replaces a wildcard in a list with the list given as the third argument
+-- Replaces a wildcard in a list with the list given as the third argument 'x' "3*cos(x) + 4 - x" "5.37" = "3*cos(5.37) + 4 - 5.37"
 substitute :: Eq a => a -> [a] -> [a] -> [a]
-substitute _ _ _ = []
-{- TO BE WRITTEN -}
+substitute _ [] _ = []
+substitute ch xs val = concat [if x == ch then val else [x] | x <- xs]
+
+
 
 
 -- Tries to match two lists. If they match, the result consists of the sublist
 -- bound to the wildcard in the pattern list.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
-match _ _ _ = Nothing
-{- TO BE WRITTEN -}
-
+match _ [] [] = Just []
+match _ [] xs =  Nothing
+match _ xs [] = Nothing
+match wc (p:ps) (x:xs)
+  | wc == p =  orElse (singleWildcardMatch (wc:ps) (x:xs)) (longerWildcardMatch (wc:ps) (x:xs))
+  | p == x = match wc ps xs
+  | otherwise = Nothing
 
 -- Helper function to match
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
-singleWildcardMatch (wc:ps) (x:xs) = Nothing
-{- TO BE WRITTEN -}
-longerWildcardMatch (wc:ps) (x:xs) = Nothing
-{- TO BE WRITTEN -}
+
+singleWildcardMatch (wc:ps) (x:xs) 
+  | match wc ps xs == Just [] = Just [x]
+  | otherwise = Nothing
+
+longerWildcardMatch (wc:ps) (x:xs) 
+  | match wc (wc:ps) xs /= Nothing = Just (x: fromJust (match wc (wc:ps) xs))
+  | otherwise = Nothing
 
 
 
