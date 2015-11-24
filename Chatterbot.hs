@@ -154,15 +154,29 @@ matchCheck = matchTest == Just testSubstitutions
 -- Applying patterns
 --------------------------------------------------------
 
+{- 
+frenchPresentation = ("My name is *", "Je m'appelle *")
+  
+  transformationApplyTest =
+    test [
+      transformationApply '*' id "My name is Zacharias" frenchPresentation
+        ~?= Just "Je m'appelle Zacharias",
+      transformationApply '*' id "My shoe size is 45" frenchPresentation
+        ~?= Nothing
+    ]
+-}
+
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
-transformationApply _ _ _ _ = Nothing
-{- TO BE WRITTEN -}
+
+transformationApply wc f xs (t1, t2) = mmap (substitute wc (f t1)) (match wc t1 xs)
 
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ _ _ = Nothing
 {- TO BE WRITTEN -}
+
+
 
 

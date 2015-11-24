@@ -12,7 +12,8 @@ orElse :: Maybe a -> Maybe a -> Maybe a
 orElse Nothing  x  = x
 orElse (Just a) _  = Just a
 
-{- The maybe function takes a default value, a function, and a Maybe value. If the Maybe value is Nothing, the function returns the default value. 
+{- The maybe function takes a default value, a function, and a Maybe value. 
+If the Maybe value is Nothing, the function returns the default value. 
 Otherwise, it applies the function to the value inside the Just and returns the result.    
 Tries a function and sees if it returns a certain value? -}
 try :: (a -> Maybe a) -> a -> a
