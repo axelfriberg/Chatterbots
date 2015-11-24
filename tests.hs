@@ -2,16 +2,17 @@ import Utilities
 import Data.Maybe
 
 
-{- substitute :: Eq a => a -> [a] -> [a] -> [a]
+substitute :: Eq a => a -> [a] -> [a] -> [a]
 substitute _ [] _ = []
-substitute '' xs _ = xs
 substitute ch xs val = concat [if x == ch then val else [x] | x <- xs]
+--substitute ch xs val = concatMap (\x -> if x==ch then val else [x])
 
-substitute ch xs val =
+
+{-substitute ch xs val =
 	| elem ch xs = val : substitute ch xs val
 	| otherwise = x : substitute ch xs val
-
 -}
+
 
 
 

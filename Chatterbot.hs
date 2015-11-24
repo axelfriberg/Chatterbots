@@ -2,6 +2,7 @@ module Chatterbot where
 import Utilities
 import System.Random
 import Data.Char
+import Data.Maybe
 
 chatterbot :: String -> [(String, [String])] -> IO ()
 chatterbot botName botRules = do
@@ -115,10 +116,10 @@ substitute ch xs val = concat [if x == ch then val else [x] | x <- xs]
 -- bound to the wildcard in the pattern list.
 match :: Eq a => a -> [a] -> [a] -> Maybe [a]
 match _ [] [] = Just []
-match _ [] xs =  Nothing
-match _ xs [] = Nothing
+match _ [] _ =  Nothing
+match _ _ [] = Nothing
 match wc (p:ps) (x:xs)
-  | wc == p =  orElse (singleWildcardMatch (wc:ps) (x:xs)) (longerWildcardMatch (wc:ps) (x:xs))
+  | wc == p =  orElse (singleWildcardMatch (p:ps) (x:xs)) (longerWildcardMatch (wc:ps) (x:xs))
   | p == x = match wc ps xs
   | otherwise = Nothing
 
@@ -126,7 +127,7 @@ match wc (p:ps) (x:xs)
 singleWildcardMatch, longerWildcardMatch :: Eq a => [a] -> [a] -> Maybe [a]
 
 singleWildcardMatch (wc:ps) (x:xs) 
-  | match wc ps xs == Just [] = Just [x]
+  | match wc ps xs /= Nothing = Just [x]
   | otherwise = Nothing
 
 longerWildcardMatch (wc:ps) (x:xs) 
