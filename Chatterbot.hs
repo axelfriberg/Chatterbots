@@ -34,9 +34,15 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 {- TO BE WRITTEN -}
 rulesApply _ = id
 
-reflect :: Phrase -> Phrase
-{- TO BE WRITTEN -}
-reflect = id
+reflect :: Phrase -> Phrase -- [String, String, String...]
+reflect ps = map (\p -> try lookup p reflections) ps
+
+
+{-
+  | try lookup (p reflections) == Nothing = Nothing
+  | otherwise = Nothing
+  -}
+
 
 reflections =
   [ ("am",     "are"),
@@ -175,6 +181,11 @@ transformationApply wc f xs (t1, t2) = mmap (substitute wc (f t2)) (match wc t1 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
+
+{-transformationsApply wc f (t:ts) xs 
+  | transformationApply wc f xs t == Nothing = transformationsApply wc f ts xs
+  | otherwise = transformationApply wc f xs t
+  -}
 
 transformationsApply wc f (t:ts) xs = orElse (transformationApply wc f xs t) (transformationsApply wc f ts xs)
 
