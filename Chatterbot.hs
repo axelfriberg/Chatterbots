@@ -34,7 +34,7 @@ stateOfMind _ = return id
 
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 {- TO BE WRITTEN -}
-rulesApply pp p = transformationsApply "*" (reflect p) p
+--rulesApply pp p = transformationsApply "*" reflect pp p 
 
 
 reflect :: Phrase -> Phrase -- [String, String, String...]
