@@ -169,13 +169,18 @@ frenchPresentation = ("My name is *", "Je m'appelle *")
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
 
-transformationApply wc f xs (t1, t2) = mmap (substitute wc (f t1)) (match wc t1 xs)
+transformationApply wc f xs (t1, t2) = mmap (substitute wc (f t2)) (match wc t1 xs)
 
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
-transformationsApply _ _ _ _ = Nothing
-{- TO BE WRITTEN -}
+transformationsApply _ _ [] _ = Nothing
+
+transformationsApply wc f (t:ts) xs 
+  | transformationApply wc f xs t == Nothing = transformationsApply wc f ts xs
+  | otherwise = transformationApply wc f xs t
+
+
 
 
 
