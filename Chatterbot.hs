@@ -35,13 +35,7 @@ rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply _ = id
 
 reflect :: Phrase -> Phrase -- [String, String, String...]
-reflect ps = map (\p -> try lookup p reflections) ps
-
-
-{-
-  | try lookup (p reflections) == Nothing = Nothing
-  | otherwise = Nothing
-  -}
+reflect = map (try $ flip lookup reflections)
 
 
 reflections =
