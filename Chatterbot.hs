@@ -30,9 +30,12 @@ stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 {- TO BE WRITTEN -}
 stateOfMind _ = return id
 
+--transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
+
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 {- TO BE WRITTEN -}
-rulesApply _ = id
+rulesApply pp p = transformationsApply "*" (reflect p) p
+
 
 reflect :: Phrase -> Phrase -- [String, String, String...]
 reflect = map (try $ flip lookup reflections)
@@ -175,11 +178,6 @@ transformationApply wc f xs (t1, t2) = mmap (substitute wc (f t2)) (match wc t1 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
-
-{-transformationsApply wc f (t:ts) xs 
-  | transformationApply wc f xs t == Nothing = transformationsApply wc f ts xs
-  | otherwise = transformationApply wc f xs t
-  -}
 
 transformationsApply wc f (t:ts) xs = orElse (transformationApply wc f xs t) (transformationsApply wc f ts xs)
 
