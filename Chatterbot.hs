@@ -176,11 +176,7 @@ transformationApply wc f xs (t1, t2) = mmap (substitute wc (f t2)) (match wc t1 
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
 
-transformationsApply wc f (t:ts) xs 
-  | transformationApply wc f xs t == Nothing = transformationsApply wc f ts xs
-  | otherwise = transformationApply wc f xs t
-
-
+transformationsApply wc f (t:ts) xs = orElse (transformationApply wc f xs t) (transformationsApply wc f ts xs)
 
 
 
