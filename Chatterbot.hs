@@ -32,14 +32,27 @@ stateOfMind _ = return id
 
 --transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 
+{-
+words   :: String -> [String]
+words breaks a string up into a list of words, which were delimited by white space.
+
+transformations = [(words "I hate *", words "Why do you hate * ?")]
+
+rulesApplyTest =
+    test [
+      rulesApply transformations (words "I hate my mother")
+        ~?= (words "Why do you hate your mother ?"),
+      rulesApply transformations (words "ARGH!")
+        ~?= (words "")
+    ]
+-}
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 {- TO BE WRITTEN -}
---rulesApply pp p = transformationsApply "*" reflect pp p 
-
+rulesApply pp p = fromJust $ transformationsApply "*" reflect pp p
+-- transformationsApply wc f (t:ts) xs
 
 reflect :: Phrase -> Phrase -- [String, String, String...]
 reflect = map (try $ flip lookup reflections)
-
 
 reflections =
   [ ("am",     "are"),
@@ -167,20 +180,24 @@ frenchPresentation = ("My name is *", "Je m'appelle *")
       transformationApply '*' id "My shoe size is 45" frenchPresentation
         ~?= Nothing
     ]
+
+
+transformationsApplyTest =
+    test [
+      transformationsApply '*' id presentations "My name is Zacharias"
+        ~?= Just "Je m'appelle Zacharias",
+      transformationsApply '*' id (reverse presentations) "My name is Zacharias"
+        ~?= Just "Mitt namn är Zacharias",
+      transformationsApply '*' id (reverse presentations) "My shoe size is 45"
+        ~?= Nothing
+    ]
 -}
 
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
-
-transformationApply wc f xs (t1, t2) = mmap (substitute wc (f t2)) (match wc t1 xs)
-
+transformationApply wc f xs (t1, t2) = mmap (substitute wc t2 . f) (match wc t1 xs)
 
 -- Applying a list of patterns until one succeeds
 transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
 transformationsApply _ _ [] _ = Nothing
-
 transformationsApply wc f (t:ts) xs = orElse (transformationApply wc f xs t) (transformationsApply wc f ts xs)
-
-
-
-
