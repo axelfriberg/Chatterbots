@@ -26,30 +26,30 @@ type BotBrain = [(Phrase, [Phrase])]
 
 --------------------------------------------------------
 
+rollDice :: IO ()
+rollDice = do
+  r <- randomIO :: IO Float
+  putStrLn ("You rolled " ++ show (floor (6*r+1)))
+
+--map2 (f1, f2) (x1, x2) = (f1 x1, f2 x2)
+--return $ rulesApply $ map  (map2 (fst, snd) (id, pick r)) bb
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
-{- TO BE WRITTEN -}
 stateOfMind _ = return id
+{- 
+stateOfMind bb = do 
+  r <- randomIO :: IO Float
+  mapfst <- map fst bb
+  mapsnd <- map snd bb
+  randPhrasr <- map pick r mapsnd  
+  return $ rulesApply $ (zip mapfst randPhrasr) id
 
---transformationsApply :: Eq a => a -> ([a] -> [a]) -> [([a], [a])] -> [a] -> Maybe [a]
+stateOfMind1 bb = do 
+  r <- randomIO :: IO Float
+  return $ rulesApply $ map  (map2 (fst, snd) (id, pick r)) bb
+TO BE WRITTEN -}
 
-{-
-words   :: String -> [String]
-words breaks a string up into a list of words, which were delimited by white space.
-
-transformations = [(words "I hate *", words "Why do you hate * ?")]
-
-rulesApplyTest =
-    test [
-      rulesApply transformations (words "I hate my mother")
-        ~?= (words "Why do you hate your mother ?"),
-      rulesApply transformations (words "ARGH!")
-        ~?= (words "")
-    ]
--}
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
 rulesApply pp p = fromMaybe (prepare "") (transformationsApply "*" reflect pp p)
--- transformationsApply wc f (t:ts) xs
 
 reflect :: Phrase -> Phrase -- [String, String, String...]
 reflect = map (try $ flip lookup reflections)
@@ -85,9 +85,10 @@ present = unwords
 prepare :: String -> Phrase
 prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|") 
 
+--type BotBrain = [(Phrase, [Phrase])]
 rulesCompile :: [(String, [String])] -> BotBrain
 {- TO BE WRITTEN -}
-rulesCompile _ = []
+rulesCompile = map . map2 . (prepare, prepare) 
 
 
 --------------------------------------
@@ -169,29 +170,6 @@ matchCheck = matchTest == Just testSubstitutions
 -------------------------------------------------------
 -- Applying patterns
 --------------------------------------------------------
-
-{- 
-frenchPresentation = ("My name is *", "Je m'appelle *")
-  
-  transformationApplyTest =
-    test [
-      transformationApply '*' id "My name is Zacharias" frenchPresentation
-        ~?= Just "Je m'appelle Zacharias",
-      transformationApply '*' id "My shoe size is 45" frenchPresentation
-        ~?= Nothing
-    ]
-
-
-transformationsApplyTest =
-    test [
-      transformationsApply '*' id presentations "My name is Zacharias"
-        ~?= Just "Je m'appelle Zacharias",
-      transformationsApply '*' id (reverse presentations) "My name is Zacharias"
-        ~?= Just "Mitt namn är Zacharias",
-      transformationsApply '*' id (reverse presentations) "My shoe size is 45"
-        ~?= Nothing
-    ]
--}
 
 -- Applying a single pattern
 transformationApply :: Eq a => a -> ([a] -> [a]) -> [a] -> ([a], [a]) -> Maybe [a]
