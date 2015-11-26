@@ -48,7 +48,7 @@ rulesApplyTest =
 -}
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 {- TO BE WRITTEN -}
-rulesApply pp p = fromJust $ transformationsApply "*" reflect pp p
+rulesApply pp p = fromMaybe (prepare "") (transformationsApply "*" reflect pp p)
 -- transformationsApply wc f (t:ts) xs
 
 reflect :: Phrase -> Phrase -- [String, String, String...]
