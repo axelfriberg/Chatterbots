@@ -35,7 +35,7 @@ rollDice = do
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 stateOfMind bb = do
   r <- randomIO :: IO Float
-  return $ rulesApply $ map (map2(id, pick r)) bb
+  return $ rulesApply $ map (map2 (id, pick r)) bb
 
 {- 
 stateOfMind bb = do 
@@ -89,8 +89,8 @@ prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|")
 
 --type BotBrain = [(Phrase, [Phrase])]
 rulesCompile :: [(String, [String])] -> BotBrain
-{- TO BE WRITTEN -}
-rulesCompile = (map . map2 ) (words toLower, words map . toLower)
+-- [(Phrase, [Phrase])]
+rulesCompile = map $ map2 (words . map toLower, map (words . map toLower))
 
 
 
@@ -116,8 +116,13 @@ reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
-{- TO BE WRITTEN -}
-reductionsApply _ = id
+-- [([String], [String])] -> [String] -> [String]
+reductionsApply = fix . try . transformationsApply "*" id
+
+
+{-  | match "*" t1 p /= Nothing = substitute "*" p t2
+  | otherwise = reductionsApply ts p -}
+
 
 
 -------------------------------------------------------
