@@ -37,19 +37,6 @@ stateOfMind bb = do
   r <- randomIO :: IO Float
   return $ rulesApply $ map (map2 (id, pick r)) bb
 
-{- 
-stateOfMind bb = do 
-  r <- randomIO :: IO Float
-  mapfst <- map fst bb
-  mapsnd <- map snd bb
-  randPhrasr <- map pick r mapsnd  
-  return $ rulesApply $ (zip mapfst randPhrasr) id
-
-stateOfMind1 bb = do 
-  r <- randomIO :: IO Float
-  return $ rulesApply $ map  (map2 (fst, snd) (id, pick r)) bb
--}
-
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply pp p = fromMaybe (prepare "") (transformationsApply "*" reflect pp p)
 
@@ -87,9 +74,7 @@ present = unwords
 prepare :: String -> Phrase
 prepare = reduce . words . map toLower . filter (not . flip elem ".,:;*!#%&|") 
 
---type BotBrain = [(Phrase, [Phrase])]
 rulesCompile :: [(String, [String])] -> BotBrain
--- [(Phrase, [Phrase])]
 rulesCompile = map $ map2 (words . map toLower, map (words . map toLower))
 
 
@@ -116,14 +101,7 @@ reduce :: Phrase -> Phrase
 reduce = reductionsApply reductions
 
 reductionsApply :: [PhrasePair] -> Phrase -> Phrase
--- [([String], [String])] -> [String] -> [String]
 reductionsApply = fix . try . transformationsApply "*" id
-
-
-{-  | match "*" t1 p /= Nothing = substitute "*" p t2
-  | otherwise = reductionsApply ts p -}
-
-
 
 -------------------------------------------------------
 -- Match and substitute
@@ -133,9 +111,6 @@ reductionsApply = fix . try . transformationsApply "*" id
 substitute :: Eq a => a -> [a] -> [a] -> [a]
 substitute _ [] _ = []
 substitute ch xs val = concat [if x == ch then val else [x] | x <- xs]
-
-
-
 
 -- Tries to match two lists. If they match, the result consists of the sublist
 -- bound to the wildcard in the pattern list.
