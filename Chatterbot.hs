@@ -26,11 +26,6 @@ type BotBrain = [(Phrase, [Phrase])]
 
 --------------------------------------------------------
 
-rollDice :: IO ()
-rollDice = do
-  r <- randomIO :: IO Float
-  putStrLn ("You rolled " ++ show (floor (6*r+1)))
-
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 stateOfMind bb = do
   r <- randomIO :: IO Float
