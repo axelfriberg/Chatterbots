@@ -31,7 +31,6 @@ rollDice = do
   r <- randomIO :: IO Float
   putStrLn ("You rolled " ++ show (floor (6*r+1)))
 
---map2 (f1, f2) (x1, x2) = (f1 x1, f2 x2)
 stateOfMind :: BotBrain -> IO (Phrase -> Phrase)
 stateOfMind bb = do
   r <- randomIO :: IO Float
@@ -40,7 +39,7 @@ stateOfMind bb = do
 rulesApply :: [PhrasePair] -> Phrase -> Phrase
 rulesApply pp p = fromMaybe (prepare "") (transformationsApply "*" reflect pp p)
 
-reflect :: Phrase -> Phrase -- [String, String, String...]
+reflect :: Phrase -> Phrase
 reflect = map (try $ flip lookup reflections)
 
 reflections =
